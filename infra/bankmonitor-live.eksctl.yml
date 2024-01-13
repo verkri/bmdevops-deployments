@@ -1,0 +1,47 @@
+# An example of ClusterConfig object specifying subnets for a nodegroup
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: bankmonitor-live
+  region: eu-west-1
+  version: "1.28"
+
+vpc:
+  id: vpc-025a5bb2bfe8298f4
+  cidr: "192.168.0.0/16"
+  subnets:
+    public:
+      public-1:
+        id: subnet-0d59a36f81659a619
+      public-2:
+        id: subnet-0141eaa17e5ce5a4e
+    private:
+      private-1:
+        id: subnet-0acbee1bb3b50f95e
+      private-2:
+        id: subnet-0421a48e5281c066e
+
+managedNodeGroups:
+  - name: webapp
+    instancePrefix: eks-webapp
+    spot: true
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 2
+    volumeSize: 10
+    subnets:
+      - public-1
+      - public-2
+  - name: backend
+    instancePrefix: eks-backend
+    spot: true
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 2
+    volumeSize: 10
+    subnets:
+      - private-1
+      - private-2
+    privateNetworking: true
